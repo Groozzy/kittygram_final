@@ -11,6 +11,8 @@ services:
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+    restart: always
+
   backend:
     image: groozzy/kittygram_backend
     env_file: .env
@@ -19,6 +21,8 @@ services:
       - media:/var/www/kittygram/media
     depends_on:
       - db
+    restart: on-failure
+
   frontend:
     env_file: .env
     image: groozzy/kittygram_frontend
@@ -26,11 +30,14 @@ services:
     volumes:
       - static:/frontend_static
       - media:/var/www/kittygram/media
+    restart: no
+
   gateway:
     image: groozzy/kittygram_gateway
     env_file: .env
     ports:
-      - 9000:80
+      - {NGINX_PORT}:80
     volumes:
       - static:/staticfiles/
       - media:/var/www/kittygram/media
+    restart: always
